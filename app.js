@@ -4,31 +4,51 @@ const express = require('express');
 // Create a new instance of the express application.
 const app = express();
 
-// Middleware to log every received request.
-// Middleware functions are functions that have access to the request and response objects, and the next middleware function in the application’s request-response cycle.
+// Define a middleware that sets up headers to handle Cross-Origin Resource Sharing (CORS) issues.
+// CORS headers tell the browser to let a web application running at one origin (domain) have permission 
+// to access selected resources from a server at a different origin.
 app.use((req, res, next) => {
-  console.log("Requête reçue !"); // Logs that a request was received.
-  next(); // Move on to the next middleware in the stack.
+
+  // Allow any domain to access this API by setting the origin to '*'.
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  // Define which headers can be used as part of the request.
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+
+  // Define which HTTP methods are allowed when accessing the resource in response to a preflight request.
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+
+  // Proceed to the next middleware in the chain.
+  next();
 });
 
-// Middleware to set the response status to 201 (Created).
-// This is just for demonstration as typically, a 201 status is used when a new resource has been created as a result of the request.
-app.use((req, res, next) => {
-  res.status(201); // Set the response status code to 201.
-  next(); // Move on to the next middleware.
-})
+// Define a middleware for the route "/api/stuff".
+// This middleware will handle any requests made to "/api/stuff" and send a JSON response with a list of items.
+app.use('/api/stuff', (req, res, next) => {
+  
+  // An array of mock data representing two items.
+  const stuff = [
+    {
+      _id: 'oeihfzeoi',
+      title: 'Mon premier objet',
+      description: 'Les infos de mon premier objet',
+      imageUrl: 'https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg',
+      price: 4900,
+      userId: 'qsomihvqios',
+    },
+    {
+      _id: 'oeihfzeomoihi',
+      title: 'Mon deuxième objet',
+      description: 'Les infos de mon deuxième objet',
+      imageUrl: 'https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg',
+      price: 2900,
+      userId: 'qsomihvqios',
+    },
+  ];
 
-// Middleware to send a JSON response to the client.
-// This will typically be the client's browser or any other client making the HTTP request.
-app.use((req, res, next) => {
-  res.json({ message: "Votre requête a bien été reçue !"}); // Send a JSON response to the client.
-  next(); // Move on to the next middleware. This line may be unnecessary here since the response is already sent.
-});
-
-// Middleware to log that the response has been successfully sent.
-app.use((req, res, next) => {
-  console.log('Réponse envoyée avec succès !'); // Logs that the response was successfully sent.
-  // There's no call to next() here as it's the last middleware in the stack.
+  // Set the response status code to 200 (OK) and send the 'stuff' array as a JSON response.
+  // This will return the mock data to the client when they access the "/api/stuff" route.
+  res.status(200).json(stuff);
 });
 
 // Export the app instance so it can be used in other files, like server.js in our case.

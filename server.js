@@ -64,7 +64,7 @@ server.on('listening', () => {
   const address = server.address();  // Get the server address again.
 
   // Determine if the address is a named pipe or a port number.
-  const bind = typeof address === 'string' ? 'pipe ' + address : 'port: ' + port;
+  const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
 
   console.log('Listening on ' + bind);  // Log the server status.
 });
