@@ -29,6 +29,7 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 
+// add stuff
 app.post('/api/stuff', (req, res, next) => {
   delete req.body._id;
   const thing = new Thing({
@@ -39,12 +40,28 @@ app.post('/api/stuff', (req, res, next) => {
     .catch(error => res.status(400).json({ error }));
 });
 
+// retrieve a particular stuff
 app.get('/api/stuff/:id', (req, res, next) => {
   Thing.findOne({ _id: req.params.id })
     .then(thing => res.status(200).json(thing))
     .catch(error => res.status(404).json({ error }));
 })
 
+// modify a particular stuff
+app.put('/api/stuff/:id', (req, res, next) => {
+  Thing.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Objet modifié !'}))
+    .catch(error => res.status(400).json({ error }));
+});
+
+// delete a particular stuff
+app.delete('/api/stuff/:id', (req, res, next) => {
+  Thing.deleteOne({ _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+    .catch(error => res.status(400).json({ error }));
+});
+
+// get all stuff
 app.use('/api/stuff', (req, res, next) => {
   Thing.find()
     .then(things => res.status(200).json(things))
