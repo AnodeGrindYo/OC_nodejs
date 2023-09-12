@@ -1,6 +1,9 @@
 // Import the express module to help create the server's application instance.
 const express = require('express');
 
+// Import the body-parser module, which extracts the entire body portion of an incoming request and exposes it on `req.body`.
+const bodyParser = require('body-parser');
+
 // Create a new instance of the express application.
 const app = express();
 
@@ -20,6 +23,22 @@ app.use((req, res, next) => {
 
   // Proceed to the next middleware in the chain.
   next();
+});
+
+app.use(bodyParser.json());
+// The above middleware will parse incoming request bodies in a middleware before your handlers, available under the `req.body` property.
+// This is especially useful for handling JSON post requests.
+
+// Define a middleware that responds to POST requests made to "/api/stuff".
+// It logs the incoming request body and sends a JSON response indicating the object was created.
+app.post('/api/stuff', (req, res, next) => {
+  // Log the request body to the console. This is typically the data sent by the client.
+  console.log(req.body);
+
+  // Respond with a status code of 201 (indicating creation) and send a JSON response.
+  res.status(201).json({
+    message: "Objet créé !"
+  });
 });
 
 // Define a middleware for the route "/api/stuff".
