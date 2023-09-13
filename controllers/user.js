@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 exports.signup = (req, res, next) => {
   console.log("Signup...");
@@ -26,14 +27,18 @@ exports.login = (req, res, next) => {
       }
       bcrypt.compare(req.body.password, user.password)
         .then(valid => {
-          console.log(req.body.email + " is now connected !");
           if (!valid) {
             console.log("The password is not valid for user " + req.body.email + ", he tried : " + req.body.password);
             return res.status(401).json({ message: 'Paire login/mot de passe incorrecte' });
           }
+          console.log(req.body.email + " is now connected !");
           res.status(200).json({
             userId: user._id,
-            token: 'TOKEN'
+            token: jwt.sign(
+              { userId: user._id},
+              'RANDOM_TOKEN_SECRET', // Just for dev purpose, replace it in production !!!
+              { expiresIn: '24h'}
+            )
           });
         })
         .catch(error => res.status(500).json({ error }));
