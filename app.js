@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 
 const stuffRoutes = require('./routes/stuff');
 
+const userRoutes = require('./routes/user');
+
 
 
 mongoose.connect('mongodb+srv://mragodoy:K92tCSHC89r9ykLR@cluster0.edinewt.mongodb.net/?retryWrites=true&w=majority',
@@ -29,5 +31,8 @@ app.use(bodyParser.json());
 
 // here we use the routes we moved in ./routes/stuff
 app.use('/api/stuff', stuffRoutes);
+
+// use the routes for users
+app.use('/api/auth', userRoutes);
 
 module.exports = app;
