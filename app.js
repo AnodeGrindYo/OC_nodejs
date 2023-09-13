@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 
 const mongoose = require('mongoose');
 
+const path = require('path');
+
 const stuffRoutes = require('./routes/stuff');
 
 const userRoutes = require('./routes/user');
@@ -28,6 +30,9 @@ app.use((req, res, next) => {
 });
 
 app.use(bodyParser.json());
+
+// tells Express to manage the images resource statically (a subdirectory of our base directory, __dirname) each time it receives a request to the /images route
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // here we use the routes we moved in ./routes/stuff
 app.use('/api/stuff', stuffRoutes);
